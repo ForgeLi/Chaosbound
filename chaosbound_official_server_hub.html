@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaosbound | Unleash Chaos. Rule the Realm.</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        chaos: {
+                            purple: '#a855f7',
+                            crimson: '#ef4444',
+                            cyan: '#06b6d4',
+                            dark: '#07080e',
+                            card: 'rgba(15, 17, 26, 0.75)',
+                            border: 'rgba(239, 68, 68, 0.15)'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Cinzel', 'Orbitron', 'sans-serif'],
+                        cyber: ['Orbitron', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary-accent: #a855f7;
+            --primary-glow: rgba(168, 85, 247, 0.4);
+            --secondary-accent: #ef4444;
+            --secondary-glow: rgba(239, 68, 68, 0.35);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #05060a;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        .font-heading {
+            font-family: 'Cinzel', serif;
+        }
+
+        .font-cyber {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Glowing text & borders */
+        .glow-text-purple {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+        }
+        
+        .glow-text-crimson {
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
+        }
+
+        .glass-panel {
+            background: rgba(11, 13, 22, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(18, 20, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: var(--secondary-accent);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px -10px var(--secondary-glow);
+        }
+
+        /* Background grid overlay */
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(168, 85, 247, 0.12) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+
+        /* Animated ambient background orbs */
+        .chaos-orb-1 {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--secondary-glow) 0%, rgba(0,0,0,0) 70%);
+            top: -150px;
+            left: -150px;
+            z-index: 0;
+            pointer-events: none;
+            animation: pulse-orb 9s infinite alternate ease-in-out;
+        }
+
+        .chaos-orb-2 {
+            position: absolute;
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+            top: 35%;
+            right: -250px;
+            z-index: 0;
+            pointer-events: none;
+            animation: pulse-orb 11s infinite alternate ease-in-out 2s;
+        }
+
+        @keyframes pulse-orb {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+            100% { transform: scale(1.25) translate(40px, 50px); opacity: 0.85; }
+        }
+
+        /* Pulse glowing button animation */
+        .btn-glow-crimson {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+        .btn-glow-crimson:hover {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.7);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05060a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1b2e;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ef4444;
+        }
+
+        #toast {
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-200 antialiased selection:bg-red-600 selection:text-white">
+
+    <!-- Ambient Background Effects -->
+    <div class="chaos-orb-1" id="orb-primary"></div>
+    <div class="chaos-orb-2" id="orb-secondary"></div>
+    <div class="fixed inset-0 bg-grid-pattern pointer-events-none z-0 opacity-50"></div>
+
+    <!-- Copy IP Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 pointer-events-none">
+        <div class="glass-panel px-5 py-4 rounded-xl border border-red-500/40 flex items-center gap-3 shadow-2xl bg-slate-950/90">
+            <div class="w-9 h-9 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-fire"></i>
+            </div>
+            <div>
+                <p class="font-bold text-sm text-white font-cyber" id="toast-title">Server IP Copied!</p>
+                <p class="text-xs text-slate-400" id="toast-desc">paste inside your client or F8 console.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-40 glass-panel border-b border-white/10 bg-slate-950/85 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo & Server Name -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-red-600 via-purple-600 to-cyan-400 p-[2px] transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-skull text-red-500 group-hover:text-purple-400 transition-colors text-lg" id="nav-icon"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading font-black text-2xl tracking-wider text-white flex items-center gap-1" id="nav-server-name">
+                        CHAOS<span class="text-red-500 font-cyber text-xl" id="theme-accent-text">BOUND</span>
+                    </span>
+                    <span class="text-[9px] font-cyber uppercase tracking-widest text-red-400/80 -mt-1" id="nav-tagline">SCRIPTED ROLEPLAY</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden md:flex items-center gap-8 font-semibold text-xs uppercase tracking-wider text-slate-300">
+                <a href="#features" class="hover:text-red-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> Features</a>
+                <a href="#rules" class="hover:text-red-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-scroll text-cyan-400"></i> Rules</a>
+                <a href="#ranks" class="hover:text-red-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> VIP Ranks</a>
+                <a href="#how-to-join" class="hover:text-red-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-bolt text-red-500"></i> How to Join</a>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleConfigModal()" class="p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 transition-all text-xs flex items-center gap-2" title="Owner Admin Customizer">
+                    <i class="fa-solid fa-sliders text-purple-400"></i>
+                    <span class="hidden sm:inline font-bold">Customize</span>
+                </button>
+                <a id="nav-discord-btn" href="https://discord.gg/uQRh5ydGv8" target="_blank" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+                    <i class="fa-brands fa-discord text-base"></i>
+                    <span>Discord</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dynamic Hero Section -->
+    <section class="relative pt-12 pb-20 md:pt-24 md:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Main Content -->
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                    <!-- Status Indicator Pill -->
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-panel border border-red-500/30 text-xs font-semibold">
+                        <span class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                        <span class="text-slate-300 uppercase tracking-wider font-cyber">SERVER ONLINE:</span>
+                        <span class="text-red-400 font-bold font-mono tracking-wide" id="hero-player-count">218 / 300 PLAYERS IN REALM</span>
+                    </div>
+
+                    <!-- Main Server Title -->
+                    <div class="space-y-2">
+                        <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black font-heading tracking-tight text-white leading-none">
+                            <span class="bg-gradient-to-r from-red-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent glow-text-crimson" id="hero-server-title">CHAOSBOUND</span>
+                        </h1>
+                        <p class="text-lg sm:text-2xl font-cyber text-purple-400 font-bold uppercase tracking-widest pt-2" id="hero-tagline">
+                            Unleash Chaos. Rule the Realm.
+                        </p>
+                    </div>
+
+                    <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed" id="hero-server-subtitle">
+                        Step into a high-octane, custom-scripted dark fantasy & cyberpunk RP universe. Forge dynamic factions, execute high-stakes territorial war, command custom abilities, and thrive in an unmerciful player economy.
+                    </p>
+
+                    <!-- Hero Call-to-Actions -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a id="hero-discord-btn" href="https://discord.gg/uQRh5ydGv8" target="_blank" class="px-7 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-xl shadow-purple-600/30 flex items-center gap-3 group">
+                            <i class="fa-brands fa-discord text-xl group-hover:scale-110 transition-transform"></i>
+                            <span id="hero-discord-text">Join Discord Server</span>
+                        </a>
+
+                        <button onclick="copyServerIP()" class="px-7 py-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-all btn-glow-crimson flex items-center gap-3">
+                            <i class="fa-solid fa-skull"></i>
+                            <span>Connect to Chaosbound</span>
+                        </button>
+
+                        <a href="#ranks" class="px-6 py-4 rounded-xl glass-panel hover:bg-slate-800 text-amber-400 font-bold text-xs uppercase tracking-wider transition-all border border-amber-500/30 flex items-center gap-2">
+                            <i class="fa-solid fa-crown text-amber-400"></i>
+                            <span>VIP Perks</span>
+                        </a>
+                    </div>
+
+                    <!-- Direct IP Quick-Copy Box -->
+                    <div class="p-4 rounded-2xl glass-panel border border-red-500/20 flex items-center justify-between gap-4 max-w-md mx-auto lg:mx-0">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-red-950/60 border border-red-500/30 flex items-center justify-center text-red-400 font-cyber text-xs font-bold">
+                                IP
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[10px] text-slate-400 uppercase font-cyber font-semibold">Direct Server Connection</p>
+                                <p class="font-mono text-sm text-slate-100 font-bold" id="display-server-ip">connect.chaosbound-rp.com</p>
+                            </div>
+                        </div>
+                        <button onclick="copyServerIP()" class="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-red-900/40 text-slate-300 hover:text-white text-xs font-bold transition-all border border-white/10 flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Hero Feature Cards -->
+                <div class="lg:col-span-5 space-y-5">
+                    <!-- Feature Box 1 -->
+                    <div class="glass-card p-6 rounded-2xl border border-red-500/30 relative overflow-hidden group">
+                        <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-red-600/10 rounded-full blur-3xl group-hover:bg-red-600/20 transition-all"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] font-cyber uppercase tracking-widest text-red-400 font-bold">Custom Engine Framework</span>
+                                <h3 class="text-2xl font-black font-heading text-white mt-1">Dark Realm Mechanics</h3>
+                            </div>
+                            <span class="p-3 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20">
+                                <i class="fa-solid fa-fire text-xl"></i>
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3 leading-relaxed">Engineered from scratch to support intense full-scale guild battles, abilities, and crime syndicates without tickrate drop.</p>
+                        <div class="grid grid-cols-2 gap-3 pt-4">
+                            <div class="p-3 rounded-xl bg-slate-950/80 border border-white/5">
+                                <p class="text-[10px] uppercase font-cyber text-slate-400">High Tickrate</p>
+                                <p class="text-base font-bold font-mono text-purple-400">128 Hz Sync</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-950/80 border border-white/5">
+                                <p class="text-[10px] uppercase font-cyber text-slate-400">Anticheat</p>
+                                <p class="text-base font-bold font-mono text-emerald-400">Kernel Active</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature Box 2 -->
+                    <div class="glass-card p-5 rounded-2xl border border-purple-500/30 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm font-cyber">24/7 Active Staff & Events</h4>
+                                <p class="text-xs text-slate-400">Live DM/GM story arcs & faction moderation</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-mono px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">VERIFIED</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Scripts Showcase -->
+    <section id="features" class="py-20 relative z-10 border-t border-white/5 bg-slate-950/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-red-400 text-xs font-cyber font-bold uppercase tracking-widest">Custom Architecture</span>
+                <h2 class="text-3xl sm:text-5xl font-black font-heading text-white mt-2">SCRIPTED REALM SYSTEMS</h2>
+                <p class="text-slate-400 mt-4 text-sm sm:text-base">Explore custom scripts built for extreme roleplay immersion, criminal empires, and strategic domain dominance.</p>
+            </div>
+
+            <!-- Features 6-Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Script 1 -->
+                <div class="glass-card p-8 rounded-2xl relative group border-t-2 border-t-red-500">
+                    <div class="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-skull-crossbones"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-3">Territory War Engine</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Claim territory turfs, construct rival outposts, and battle in real-time control points with localized dynamic loot control.</p>
+                    <button onclick="openFeatureModal('Territory War Engine', 'Engage in synchronized turf capture mechanics. Factions fight for physical sectors across the map, earning passive faction tax revenues, black-market crafting drops, and exclusive hideout safehouses.', 'fa-skull-crossbones')" class="text-xs font-bold text-red-400 hover:text-red-300 flex items-center gap-2">
+                        <span>Inspect System Script</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Script 2 -->
+                <div class="glass-card p-8 rounded-2xl relative group border-t-2 border-t-purple-500">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-3">Scripted Skill Trees</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Gain XP through roleplay activities to unlock unique passive perks, lockpicking masteries, crafting blueprints, and combat abilities.</p>
+                    <button onclick="openFeatureModal('Scripted Abilities & Skill Trees', 'Players level up in branches including Infiltration, Engineering, Combat Tactics, and Bartering. Custom UI skills tree with over 50 unlockable passive nodes and active abilities.', 'fa-bolt')" class="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-2">
+                        <span>Inspect System Script</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Script 3 -->
+                <div class="glass-card p-8 rounded-2xl relative group border-t-2 border-t-cyan-500">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-vault"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-3">Custom Heists & Vaults</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Multi-tiered robbery framework featuring interactive hacking terminals, thermite breaching, hostage negotiator UI, and vault drills.</p>
+                    <button onclick="openFeatureModal('Multi-Stage Bank & Vault Heists', 'Plan complex heists using dark web planning boards. Execute high-risk breaches with thermo-charges, laser hacks, keycards, and getaway vehicle extractions.', 'fa-vault')" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                        <span>Inspect System Script</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Script 4 -->
+                <div class="glass-card p-8 rounded-2xl relative group border-t-2 border-t-amber-500">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-3">Dynamic Market Economy</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Player-driven resource market, dynamic pricing based on supply shortages, trade routes, illegal contraband, and stock exchanges.</p>
+                    <button onclick="openFeatureModal('Player-Driven Market Economy', 'All weapon parts, medical supplies, and vehicles flow through player transactions. Features in-game banking apps, debt loans, crypto markets, and property auctions.', 'fa-coins')" class="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-2">
+                        <span>Inspect System Script</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Script 5 -->
+                <div class="glass-card p-8 rounded-2xl relative group border-t-2 border-t-emerald-500">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-flask"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-3">Black Market Crafting</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Gather raw components in dangerous wilderness zones to craft weapons, military armors, illegal stimulants, and breach gadgets.</p>
+                    <button onclick="openFeatureModal('Black Market Crafting & Extraction', 'Locate hidden crafting tables hidden in unmonitored zones. Combine schematics and ingredients to forge high-tier armor plating, customized firearms, and tactical gear.', 'fa-flask')" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-2">
+                        <span>Inspect System Script</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Script 6 -->
+                <div class="glass-card p-8 rounded-2xl relative group border-t-2 border-t-indigo-500">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-mobile-retro"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-3">Cybernetic OS Tablet</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">In-game tablet UI for encrypted messaging, bounty postings, dispatch tracking, faction rosters, and dark web contracts.</p>
+                    <button onclick="openFeatureModal('Cybernetic OS Tablet Interface', 'Full custom NUI phone/tablet equipped with contract hit bounties, live GPS tracking for syndicate members, vehicle summons, and dispatch emergency alerts.', 'fa-mobile-retro')" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+                        <span>Inspect System Script</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Rules Database -->
+    <section id="rules" class="py-20 relative z-10 border-t border-white/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-cyan-400 text-xs font-cyber font-bold uppercase tracking-widest">Codex of Chaos</span>
+                <h2 class="text-3xl sm:text-5xl font-black font-heading text-white mt-2">SERVER RULES & GUIDELINES</h2>
+                <p class="text-slate-400 mt-2 text-xs sm:text-sm">Abide by the realm laws to maintain high-quality roleplay and game integrity.</p>
+            </div>
+
+            <!-- Search Bar & Categories -->
+            <div class="space-y-6 mb-8">
+                <!-- Search Box -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="rules-search-input" onkeyup="filterRules()" placeholder="Search guidelines (e.g. RDM, Metagaming, Combat Log, Hostages, Faction)..." class="w-full pl-11 pr-4 py-3.5 rounded-xl glass-panel border border-white/10 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 text-sm">
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="flex flex-wrap gap-2 justify-center" id="rule-tabs">
+                    <button onclick="switchRuleTab('all')" class="rule-tab-btn active px-4 py-2 rounded-xl text-xs font-cyber font-bold transition-all bg-red-600 text-white">All Codex</button>
+                    <button onclick="switchRuleTab('general')" class="rule-tab-btn px-4 py-2 rounded-xl text-xs font-cyber font-bold transition-all glass-panel text-slate-400 hover:text-white">General Standards</button>
+                    <button onclick="switchRuleTab('combat')" class="rule-tab-btn px-4 py-2 rounded-xl text-xs font-cyber font-bold transition-all glass-panel text-slate-400 hover:text-white">Combat & Death</button>
+                    <button onclick="switchRuleTab('faction')" class="rule-tab-btn px-4 py-2 rounded-xl text-xs font-cyber font-bold transition-all glass-panel text-slate-400 hover:text-white">Faction & Crime</button>
+                </div>
+            </div>
+
+            <!-- Accordion Rules Container -->
+            <div class="space-y-4" id="rules-container">
+                
+                <!-- Rule 1 -->
+                <div class="rule-card glass-panel rounded-xl border border-white/10 overflow-hidden" data-category="general" data-keywords="nvl value life rdm vdm random attack deathmatch kill">
+                    <button onclick="toggleAccordion(this)" class="w-full px-6 py-4 text-left font-semibold text-white flex justify-between items-center hover:bg-slate-900/60 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 flex items-center justify-center text-xs font-cyber font-bold">1.1</span>
+                            <span>Value of Life (NVL) & Random Attacking (RDM/VDM)</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-5 text-xs sm:text-sm text-slate-400 border-t border-white/5 pt-4 space-y-2 leading-relaxed">
+                        <p>Players must realistically value their life during all hostile interactions. If an enemy faction holds you at gunpoint without your weapon drawn, you must comply.</p>
+                        <p><strong class="text-red-400">RDM / VDM:</strong> Attacking, executing, or running over players without prior verbal initiation and story escalation is strictly prohibited.</p>
+                    </div>
+                </div>
+
+                <!-- Rule 2 -->
+                <div class="rule-card glass-panel rounded-xl border border-white/10 overflow-hidden" data-category="general" data-keywords="meta metagaming powergaming discord voice streams ooc chat info">
+                    <button onclick="toggleAccordion(this)" class="w-full px-6 py-4 text-left font-semibold text-white flex justify-between items-center hover:bg-slate-900/60 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-cyber font-bold">1.2</span>
+                            <span>Metagaming & Powergaming Prohibition</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-5 text-xs sm:text-sm text-slate-400 border-t border-white/5 pt-4 space-y-2 leading-relaxed">
+                        <p><strong class="text-purple-400">Metagaming:</strong> Using external information gathered from Discord, live streams, or out-of-character (OOC) channels inside the IC realm.</p>
+                        <p><strong class="text-purple-400">Powergaming:</strong> Forcing roleplay outcomes without allowing the other party a chance to react, or abusing game engine exploits.</p>
+                    </div>
+                </div>
+
+                <!-- Rule 3 -->
+                <div class="rule-card glass-panel rounded-xl border border-white/10 overflow-hidden" data-category="combat" data-keywords="combat logging disconnect leave quit match fight respawn NLR new life rule">
+                    <button onclick="toggleAccordion(this)" class="w-full px-6 py-4 text-left font-semibold text-white flex justify-between items-center hover:bg-slate-900/60 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs font-cyber font-bold">2.1</span>
+                            <span>Combat Logging & New Life Rule (NLR)</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-5 text-xs sm:text-sm text-slate-400 border-t border-white/5 pt-4 space-y-2 leading-relaxed">
+                        <p><strong class="text-cyan-400">Combat Logging:</strong> Disconnecting or exiting the game during an active roleplay scenario or battle will result in an immediate warning or ban.</p>
+                        <p><strong class="text-cyan-400">New Life Rule (NLR):</strong> Upon incapacitation and respawn, your character forgets all events leading up to their death and cannot return to the combat zone for 15 minutes.</p>
+                    </div>
+                </div>
+
+                <!-- Rule 4 -->
+                <div class="rule-card glass-panel rounded-xl border border-white/10 overflow-hidden" data-category="faction" data-keywords="faction gang turf war squad limit crime bank heist hostages">
+                    <button onclick="toggleAccordion(this)" class="w-full px-6 py-4 text-left font-semibold text-white flex justify-between items-center hover:bg-slate-900/60 transition-colors">
+                        <span class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-cyber font-bold">3.1</span>
+                            <span>Faction Limits & Hostage Scenarios</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-5 text-xs sm:text-sm text-slate-400 border-t border-white/5 pt-4 space-y-2 leading-relaxed">
+                        <p>Aggressive squad sizes are capped at 8 members during active turf wars and bank heist events. Fake hostages are strictly forbidden in major vault negotiations.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- How To Join Onboarding Steps -->
+    <section id="how-to-join" class="py-20 relative z-10 border-t border-white/5 bg-slate-950/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-red-400 text-xs font-cyber font-bold uppercase tracking-widest">Entry Guide</span>
+                <h2 class="text-3xl sm:text-5xl font-black font-heading text-white mt-2">HOW TO JOIN CHAOSBOUND</h2>
+                <p class="text-slate-400 mt-2 text-xs sm:text-sm">Follow these 3 streamlined steps to begin your journey.</p>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Step 1 -->
+                <div class="glass-card p-8 rounded-2xl relative border border-indigo-500/30">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-600 text-white font-black font-cyber flex items-center justify-center text-lg mb-6 shadow-lg shadow-indigo-600/30">
+                        01
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-2">Join Discord Server</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Enter our official Discord server, get assigned your roles, link your account, and meet the community.</p>
+                    <a id="step-discord-btn" href="https://discord.gg/uQRh5ydGv8" target="_blank" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-discord text-base"></i>
+                        <span>Enter Discord (uQRh5ydGv8)</span>
+                    </a>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card p-8 rounded-2xl relative border border-purple-500/30">
+                    <div class="w-12 h-12 rounded-xl bg-purple-600 text-white font-black font-cyber flex items-center justify-center text-lg mb-6 shadow-lg shadow-purple-600/30">
+                        02
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-2">Rules & Whitelist</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Read our codex regulations and complete our quick automated 3-minute whitelist quiz in Discord.</p>
+                    <a href="#rules" class="w-full py-3.5 rounded-xl bg-purple-600/20 border border-purple-500/40 text-purple-300 hover:bg-purple-600/30 font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-scroll"></i>
+                        <span>Read Server Codex</span>
+                    </a>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card p-8 rounded-2xl relative border border-red-500/30">
+                    <div class="w-12 h-12 rounded-xl bg-red-600 text-white font-black font-cyber flex items-center justify-center text-lg mb-6 shadow-lg shadow-red-600/30">
+                        03
+                    </div>
+                    <h3 class="text-xl font-bold font-cyber text-white mb-2">Connect to Chaosbound</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-6">Launch your client, press F8 or direct connect menu, and paste the direct Chaosbound IP address.</p>
+                    <button onclick="copyServerIP()" class="w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors btn-glow-crimson flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plug"></i>
+                        <span>Copy Connect IP</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Ranks & Supporter Store -->
+    <section id="ranks" class="py-20 relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-amber-400 text-xs font-cyber font-bold uppercase tracking-widest">Support the Realm</span>
+                <h2 class="text-3xl sm:text-5xl font-black font-heading text-white mt-2">VIP SUPPORTER RANKS</h2>
+                <p class="text-slate-400 mt-2 text-xs sm:text-sm">Supporter contributions directly fund dedicated server hardware, high-tickrate bandwidth, and development.</p>
+            </div>
+
+            <!-- Tier Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Tier 1: Pioneer -->
+                <div class="glass-card p-8 rounded-2xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold font-cyber text-purple-400 uppercase tracking-wider">Tier I</span>
+                            <span class="px-2.5 py-1 rounded-full bg-slate-900 text-[10px] font-cyber text-slate-300">Monthly</span>
+                        </div>
+                        <h3 class="text-2xl font-black font-cyber text-white mb-1">PIONEER</h3>
+                        <div class="text-3xl font-black font-mono text-white my-4">$9.99 <span class="text-xs font-normal text-slate-400">/ mo</span></div>
+                        <ul class="space-y-3 text-xs text-slate-300 border-t border-white/5 pt-6 mb-8">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-500"></i> Priority Queue Tier 1</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-500"></i> Pioneer Discord Role & Badge</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-500"></i> +$75,000 Starting Cash</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-500"></i> Access to Supporter Lounge</li>
+                        </ul>
+                    </div>
+                    <button onclick="openPurchaseModal('Pioneer Supporter Tier', '$9.99')" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider transition-colors">
+                        Acquire Rank
+                    </button>
+                </div>
+
+                <!-- Tier 2: Warlord (Featured) -->
+                <div class="glass-card p-8 rounded-2xl border-2 border-red-500/60 relative flex flex-col justify-between bg-slate-950/90 shadow-2xl shadow-red-600/20">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-red-600 to-purple-600 text-white font-bold font-cyber text-[9px] uppercase tracking-widest rounded-full shadow-lg">
+                        Most Demanded
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold font-cyber text-red-400 uppercase tracking-wider">Tier II</span>
+                            <span class="px-2.5 py-1 rounded-full bg-red-500/20 text-[10px] font-cyber text-red-300">Monthly</span>
+                        </div>
+                        <h3 class="text-2xl font-black font-cyber text-white mb-1">WARLORD</h3>
+                        <div class="text-3xl font-black font-mono text-white my-4">$19.99 <span class="text-xs font-normal text-slate-400">/ mo</span></div>
+                        <ul class="space-y-3 text-xs text-slate-300 border-t border-white/5 pt-6 mb-8">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-400"></i> High Priority Queue Tier 2</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-400"></i> Warlord Discord Tag + Custom Color</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-400"></i> +$200,000 Realm Funds</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-400"></i> 1x Custom Import Vehicle / Mount</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-red-400"></i> Dynamic Faction Banner Token</li>
+                        </ul>
+                    </div>
+                    <button onclick="openPurchaseModal('Warlord Supporter Tier', '$19.99')" class="w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-colors btn-glow-crimson">
+                        Acquire Rank
+                    </button>
+                </div>
+
+                <!-- Tier 3: Chaos Master -->
+                <div class="glass-card p-8 rounded-2xl border border-amber-500/30 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold font-cyber text-amber-400 uppercase tracking-wider">Tier III</span>
+                            <span class="px-2.5 py-1 rounded-full bg-amber-500/10 text-[10px] font-cyber text-amber-300">Monthly</span>
+                        </div>
+                        <h3 class="text-2xl font-black font-cyber text-white mb-1">CHAOS MASTER</h3>
+                        <div class="text-3xl font-black font-mono text-white my-4">$39.99 <span class="text-xs font-normal text-slate-400">/ mo</span></div>
+                        <ul class="space-y-3 text-xs text-slate-300 border-t border-white/5 pt-6 mb-8">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-amber-400"></i> Instant Queue Bypass (Tier 3)</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-amber-400"></i> Chaos Master Badge & VIP Channel</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-amber-400"></i> +$500,000 Realm Funds</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-amber-400"></i> 2x Custom Import Vehicle / Mounts</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-amber-400"></i> Custom Hideout / Base Decorator Pass</li>
+                        </ul>
+                    </div>
+                    <button onclick="openPurchaseModal('Chaos Master Rank', '$39.99')" class="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs uppercase tracking-wider transition-colors">
+                        Acquire Rank
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 glass-panel relative z-10 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-skull text-sm"></i>
+                </div>
+                <div>
+                    <span class="font-heading font-bold text-white text-base tracking-wider" id="footer-server-name">CHAOSBOUND</span>
+                    <p class="text-[11px] text-slate-500">© 2026 Chaosbound Scripted Roleplay. All Rights Reserved. Not affiliated with Rockstar Games or Mojang.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 font-cyber text-[11px] uppercase tracking-wider text-slate-400">
+                <a href="#features" class="hover:text-red-400 transition-colors">Features</a>
+                <a href="#rules" class="hover:text-red-400 transition-colors">Rules</a>
+                <a href="#ranks" class="hover:text-red-400 transition-colors">VIP Store</a>
+                <a id="footer-discord-link" href="https://discord.gg/uQRh5ydGv8" target="_blank" class="hover:text-indigo-400 transition-colors text-base"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin / Owner Live Customizer Modal -->
+    <div id="config-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel max-w-xl w-full rounded-2xl border border-white/10 p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-cyber font-bold text-white text-lg">Server Live Customizer</h3>
+                        <p class="text-xs text-slate-400">Dynamically update Chaosbound parameters live</p>
+                    </div>
+                </div>
+                <button onclick="toggleConfigModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Server Name</label>
+                    <input type="text" id="cfg-server-name" value="CHAOSBOUND" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Tagline</label>
+                    <input type="text" id="cfg-server-tagline" value="Unleash Chaos. Rule the Realm." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-red-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Server Connect IP</label>
+                        <input type="text" id="cfg-server-ip" value="connect.chaosbound-rp.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Discord Invite Link</label>
+                        <input type="text" id="cfg-discord-url" value="https://discord.gg/uQRh5ydGv8" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Color Palette Theme</label>
+                    <div class="grid grid-cols-3 gap-3 pt-1">
+                        <button onclick="setThemePreset('crimson')" class="py-2.5 rounded-xl bg-red-600/30 border border-red-500 text-red-300 font-bold hover:bg-red-600/50">Crimson Red</button>
+                        <button onclick="setThemePreset('purple')" class="py-2.5 rounded-xl bg-purple-600/30 border border-purple-500 text-purple-300 font-bold hover:bg-purple-600/50">Cyber Purple</button>
+                        <button onclick="setThemePreset('cyan')" class="py-2.5 rounded-xl bg-cyan-600/30 border border-cyan-500 text-cyan-300 font-bold hover:bg-cyan-600/50">Neon Cyan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-white/10 flex justify-end gap-3">
+                <button onclick="toggleConfigModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700">Cancel</button>
+                <button onclick="saveConfigChanges()" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/30">Apply Customization</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Modal -->
+    <div id="feature-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel max-w-md w-full rounded-2xl border border-white/10 p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div id="modal-feature-icon" class="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <h3 id="modal-feature-title" class="font-cyber font-bold text-white text-lg">System Script Title</h3>
+            </div>
+            <p id="modal-feature-desc" class="text-xs text-slate-300 leading-relaxed">Detailed technical description...</p>
+            <div class="pt-4 flex justify-end">
+                <button onclick="closeFeatureModal()" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Rank Modal -->
+    <div id="store-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel max-w-md w-full rounded-2xl border border-white/10 p-6 space-y-5 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <div>
+                <h3 class="font-cyber font-bold text-white text-xl" id="store-modal-package">Rank Tier</h3>
+                <p class="text-sm text-amber-400 font-mono font-bold mt-1" id="store-modal-price">$0.00</p>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">To claim your Chaosbound rank tier, join our Discord server (uQRh5ydGv8) and open a ticket in <span class="text-indigo-400 font-semibold">#vip-tickets</span>.</p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeStoreModal()" class="flex-1 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700">Close</button>
+                <a id="store-discord-redirect" href="https://discord.gg/uQRh5ydGv8" target="_blank" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-discord text-base"></i>
+                    <span>Open Discord</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for live customizer state
+        let currentIP = "connect.chaosbound-rp.com";
+        let currentDiscord = "https://discord.gg/uQRh5ydGv8";
+
+        // Copy Server IP with Toast Notification
+        function copyServerIP() {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = currentIP;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            showToast("Server IP Copied!", `Connect string: "${currentIP}"`);
+        }
+
+        // Show Toast Function
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-desc').innerText = desc;
+
+            toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // Accordion Toggle for Rules
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.fa-chevron-down');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        // Rules Search Filter
+        function filterRules() {
+            const query = document.getElementById('rules-search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.rule-card');
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                const keywords = card.getAttribute('data-keywords') || '';
+                if (text.includes(query) || keywords.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Category Tab Switching for Rules
+        function switchRuleTab(category) {
+            const tabs = document.querySelectorAll('.rule-tab-btn');
+            tabs.forEach(tab => {
+                tab.classList.remove('bg-red-600', 'text-white');
+                tab.classList.add('glass-panel', 'text-slate-400');
+            });
+            event.target.classList.add('bg-red-600', 'text-white');
+            event.target.classList.remove('glass-panel', 'text-slate-400');
+
+            const cards = document.querySelectorAll('.rule-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Feature Modal Logic
+        function openFeatureModal(title, description, iconClass) {
+            document.getElementById('modal-feature-title').innerText = title;
+            document.getElementById('modal-feature-desc').innerText = description;
+            document.getElementById('modal-feature-icon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            
+            const modal = document.getElementById('feature-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeFeatureModal() {
+            const modal = document.getElementById('feature-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Purchase Store Modal Logic
+        function openPurchaseModal(packageName, price) {
+            document.getElementById('store-modal-package').innerText = packageName;
+            document.getElementById('store-modal-price').innerText = price;
+            
+            const modal = document.getElementById('store-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeStoreModal() {
+            const modal = document.getElementById('store-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Config Modal Drawer Logic
+        function toggleConfigModal() {
+            const modal = document.getElementById('config-modal');
+            if (modal.classList.contains('opacity-0')) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // Apply Custom Changes from Admin Modal
+        function saveConfigChanges() {
+            const name = document.getElementById('cfg-server-name').value;
+            const tagline = document.getElementById('cfg-server-tagline').value;
+            currentIP = document.getElementById('cfg-server-ip').value;
+            currentDiscord = document.getElementById('cfg-discord-url').value;
+
+            // Update DOM text
+            document.getElementById('nav-server-name').innerHTML = `${name}<span class="text-red-500 font-cyber text-xl" id="theme-accent-text">BOUND</span>`;
+            document.getElementById('hero-server-title').innerText = name;
+            document.getElementById('hero-tagline').innerText = tagline;
+            document.getElementById('display-server-ip').innerText = currentIP;
+            document.getElementById('footer-server-name').innerText = name;
+
+            // Update Discord Links
+            document.getElementById('nav-discord-btn').href = currentDiscord;
+            document.getElementById('hero-discord-btn').href = currentDiscord;
+            document.getElementById('step-discord-btn').href = currentDiscord;
+            document.getElementById('footer-discord-link').href = currentDiscord;
+            document.getElementById('store-discord-redirect').href = currentDiscord;
+
+            toggleConfigModal();
+            showToast("Settings Saved!", "Website updated live.");
+        }
+
+        // Theme Switcher Presets
+        function setThemePreset(color) {
+            const root = document.documentElement;
+
+            if (color === 'crimson') {
+                root.style.setProperty('--secondary-accent', '#ef4444');
+                root.style.setProperty('--secondary-glow', 'rgba(239, 68, 68, 0.35)');
+            } else if (color === 'purple') {
+                root.style.setProperty('--secondary-accent', '#a855f7');
+                root.style.setProperty('--secondary-glow', 'rgba(168, 85, 247, 0.4)');
+            } else if (color === 'cyan') {
+                root.style.setProperty('--secondary-accent', '#06b6d4');
+                root.style.setProperty('--secondary-glow', 'rgba(6, 182, 212, 0.4)');
+            }
+            showToast("Theme Applied", `Accent switched to ${color.toUpperCase()}`);
+        }
+
+        // Dynamic player count fluctuation simulation
+        setInterval(() => {
+            const baseCount = 210;
+            const variance = Math.floor(Math.random() * 18);
+            document.getElementById('hero-player-count').innerText = `${baseCount + variance} / 300 PLAYERS IN REALM`;
+        }, 6000);
+
+        // Escape Key Listener
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFeatureModal();
+                closeStoreModal();
+                const configModal = document.getElementById('config-modal');
+                if (!configModal.classList.contains('opacity-0')) {
+                    toggleConfigModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
